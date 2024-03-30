@@ -1,0 +1,48 @@
+// Define the pins
+const int laserPin = 2; // Laser module connected to digital pin 2
+const int photoresistorPin = A0; // Photoresistor connected to analog pin A0
+
+void setup() {
+  pinMode(laserPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Turn on the laser
+  digitalWrite(laserPin, HIGH);
+  delay(1000); // Wait for 1 second to stabilize the laser beam
+  
+  // Read the intensity of light received by the photoresistor
+  int lightIntensity = analogRead(photoresistorPin);
+  
+  // Turn off the laser
+  digitalWrite(laserPin, LOW);
+  
+  // Calculate the opacity
+  float opacity = calculateOpacity(lightIntensity);
+  
+  // Print the results
+  Serial.print("Light Intensity: ");
+  Serial.println(lightIntensity);
+  Serial.print("Opacity: ");
+  Serial.println(opacity);
+  
+
+  // Wait for 5 seconds before the next reading
+  delay(5000);
+}
+
+float calculateOpacity(int lightIntensity) {
+  // Constants (need to be calibrated for your setup)
+  const float initialIntensity = 1004.0; // Maximum intensity with no smoke
+  const float k = 3.0; // Extinction coefficient (1/m)
+  const float L = 0.07; // Path length in meters
+  
+  // Beer-Lambert law calculation
+  float opacity = 1 - exp(-k * L);
+  
+  // Adjust opacity based on the measured light intensity
+  opacity *= (initialIntensity - lightIntensity) / initialIntensity;
+  
+  return opacity;
+}

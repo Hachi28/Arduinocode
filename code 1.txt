@@ -1,0 +1,78 @@
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+
+// Set the LCD address to 0x27 for a 16 chars and 2 line display
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+int pin1 = 2;
+int pin2 = 3;
+int pin3 = 4;
+
+float light;
+float lightnormal;
+float lightpercent;
+float lightpercentI;
+float lightpercentII;
+float lightper;
+void setup()
+{
+
+  Serial.begin(9600);
+
+  
+  // initialize the LCD
+  lcd.init();
+
+  // Turn on the blacklight and print a message.
+  lcd.backlight();
+  //lcd.print("Hello, world!");
+
+  pinMode(pin1, OUTPUT);
+  pinMode(pin2, OUTPUT);
+  pinMode(pin3, OUTPUT);
+}
+
+void loop()
+{
+  // Do nothing here...
+  
+
+
+  light = analogRead(A0);
+  lightnormal = (1004);
+  lightpercentI = (lightnormal - light);
+  lightpercentII = (lightpercentI / 9.70);
+  lightper = (100 - lightpercentII);
+  Serial.println(lightper);
+  lcd.clear();
+  lcd.print(String("Opacity: ") + String(lightper) + String("%"));
+  delay(500);
+  lcd.setCursor(0, 1);
+  lcd.print(String("Light: ") + String(light));
+  delay(3000);
+ 
+ if ((lightper > 85)) {
+    digitalWrite(pin1, HIGH);
+    digitalWrite(pin2, HIGH);
+    digitalWrite(pin3, HIGH);
+  } 
+  else if((lightper <= 30)){
+    digitalWrite(pin1, HIGH);
+    }
+  else {
+    digitalWrite(pin1, HIGH);
+    digitalWrite(pin2, HIGH);
+  }
+  delay(500);
+    digitalWrite(pin1, LOW);
+    digitalWrite(pin2, LOW);
+    digitalWrite(pin3, LOW);
+  
+
+
+
+}
+
+void allblink() {
+
+}
